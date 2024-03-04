@@ -35,7 +35,7 @@ if(isset($_POST['register'])){
         exit; 
     } else {
         
-        $error_message = 'Signup failed. Please try again.';
+        $error_message = 'Signup failed';
          echo $error_message;
     }
     mysqli_stmt_close($siobhan);
