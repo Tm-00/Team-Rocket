@@ -36,7 +36,7 @@ include('includes/dbconfig.php');
           <div class="confirmation-content text-center">
             <i class="icofont-check-circled text-lg text-color-2"></i>
               <h2 class="mt-3 mb-4">A request has been sent to you</h2>
-              <p>You have been assigned:</p>
+              <p>You have been Selected:</p>
 			  <h3>X</h3>
 			  <div class="button-container">
 				<a class="btn btn-main btn-round-full" href="confirmation1.html">ACCEPT</a>
