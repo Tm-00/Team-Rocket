@@ -1,16 +1,7 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
-
-if(isset($_POST['logout']))
-{
-	session_unset();
-	session_destroy();
-	header( "Refresh:1; url=loginpage.php"); 
-}
-	
-	?>
-
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -37,6 +28,51 @@ if(isset($_POST['logout']))
 </head>
 
 <body id="top">
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Novena</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownServices" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Services
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
+                            <a class="dropdown-item" href="Loginpage.php">loginpage</a>
+                            <a class="dropdown-item" href="signuppage.php">signuppage</a>
+                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
+                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
+							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
+							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
+							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
+                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="ml-auto">
+                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
+                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
 <!-- Slider Start -->
 <section class="banner">
 	<div class="container">
@@ -45,7 +81,7 @@ if(isset($_POST['logout']))
 				<div class="block">
 					<div class="divider mb-3"></div>
 					<span class="text-uppercase text-sm letter-spacing ">Total Health care solution</span>
-					<h1 class="mb-3 mt-3">Your most trusted health partner<?php session_start(); echo $_SESSION['first']; ?><?php session_start(); echo " ".$_SESSION['last']; ?><?php session_start(); echo " ".$_SESSION['number']; ?></h1>
+					<h1 class="mb-3 mt-3">Your most trusted health partner</h1>
 					
 					<p class="mb-4 pr-5"></p>
 					<div class="btn-container ">
@@ -91,9 +127,6 @@ if(isset($_POST['logout']))
 						<span>Emegency Cases</span>
 						<h4 class="mb-3">1-800-700-6200</h4>
 						<p>Call support for emergencies</p>
-						<form method="post">
-	  						<button type="submit" name="logout" style="float:right;background-color:#2B4F76">Log Out</button>
-						</form>
 					</div>
 				</div>
 			</div>
@@ -102,51 +135,48 @@ if(isset($_POST['logout']))
 </section>
 
 <!-- footer Start -->
-<footer class="footer section gray">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-4 mr-auto col-sm-6">
-				<div class="widget mb-5 mb-lg-0">
-					<div class="logo mb-4">
-						<img src="images/Arrow_logo.png" alt="" class="img-fluid">
-					</div>
+<footer class="footer section gray mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mr-auto col-sm-6">
+                <div class="widget mb-5 mb-lg-0">
+                    <div class="logo mb-4">
+                        <img src="images/Arrow_logo.png" alt="" class="img-fluid">
+                    </div>
 
-					<ul class="list-inline footer-socials mt-4">
-						<li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
-						<li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
-						<li class="list-inline-item"><a href="#"><i class="icofont-linkedin"></i></a></li>
-					</ul>
-				</div>
-			</div>
+                    <ul class="list-inline footer-socials mt-4">
+                        <li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+                    </ul>
+                </div>
+            </div>
 
-			<div class="col-lg-3 col-md-6 col-sm-6">
-				<div class="widget widget-contact mb-5 mb-lg-0">
-					<h4 class="text-capitalize mb-3">Get in Touch</h4>
-					<div class="divider mb-4"></div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="widget widget-contact mb-5 mb-lg-0">
+                    <h4 class="text-capitalize mb-3 footer-heading">Get in Touch</h4>
+                    <div class="divider mb-4"></div>
 
-					<div class="footer-contact-block mb-4">
-						<div class="icon d-flex align-items-center">
-							<i class="icofont-email mr-3"></i>
-							<span class="h6 mb-0">Support Available for 24/7</span>
-						</div>
-						<h4 class="mt-2"><a href="tel:+23-345-67890">Support@email.com</a></h4>
-					</div>
+                    <div class="footer-contact-block mb-4">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-email mr-3"></i>
+                            <span class="h6 mb-0">Support Available for 24/7</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">Support@email.com</a></h4>
+                    </div>
 
-					<div class="footer-contact-block">
-						<div class="icon d-flex align-items-center">
-							<i class="icofont-support mr-3"></i>
-							<span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
-						</div>
-						<h4 class="mt-2"><a href="tel:+23-345-67890">+23-456-6588</a></h4>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-	</div>
+                    <div class="footer-contact-block">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-support mr-3"></i>
+                            <span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">+23-456-6588</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
 
-   
 
     <!-- 
     Essential Scripts
@@ -177,3 +207,4 @@ if(isset($_POST['logout']))
   </html>
    
 
+'$firstName','$lastName','$DOB','$hashed_password','$email','$number','$userType'

@@ -28,7 +28,50 @@ include('includes/dbconfig.php');
 </head>
 
 <body id="top">
-	
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Novena</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownServices" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Services
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
+                            <a class="dropdown-item" href="Loginpage.php">loginpage</a>
+                            <a class="dropdown-item" href="signuppage.php">signuppage</a>
+                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
+                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
+							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
+							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
+							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
+                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="ml-auto">
+                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
+                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>	
 <section class="section confirmation">
   <div class="container">
     <div class="row justify-content-center">
@@ -49,48 +92,46 @@ include('includes/dbconfig.php');
 </section>
 
 <!-- footer Start -->
-<footer class="footer section gray-bg">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-4 mr-auto col-sm-6">
-				<div class="widget mb-5 mb-lg-0">
-					<div class="logo mb-4">
-						<img src="images/Arrow_logo.png" alt="" class="img-fluid">
-					</div>
+<footer class="footer section gray mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mr-auto col-sm-6">
+                <div class="widget mb-5 mb-lg-0">
+                    <div class="logo mb-4">
+                        <img src="images/Arrow_logo.png" alt="" class="img-fluid">
+                    </div>
 
-					<ul class="list-inline footer-socials mt-4">
-						<li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
-						<li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
-						<li class="list-inline-item"><a href="#"><i class="icofont-linkedin"></i></a></li>
-					</ul>
-				</div>
-			</div>
+                    <ul class="list-inline footer-socials mt-4">
+                        <li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+                    </ul>
+                </div>
+            </div>
 
-			<div class="col-lg-3 col-md-6 col-sm-6">
-				<div class="widget widget-contact mb-5 mb-lg-0">
-					<h4 class="text-capitalize mb-3">Get in Touch</h4>
-					<div class="divider mb-4"></div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="widget widget-contact mb-5 mb-lg-0">
+                    <h4 class="text-capitalize mb-3 footer-heading">Get in Touch</h4>
+                    <div class="divider mb-4"></div>
 
-					<div class="footer-contact-block mb-4">
-						<div class="icon d-flex align-items-center">
-							<i class="icofont-email mr-3"></i>
-							<span class="h6 mb-0">Support Available for 24/7</span>
-						</div>
-						<h4 class="mt-2"><a href="tel:+23-345-67890">Support@email.com</a></h4>
-					</div>
+                    <div class="footer-contact-block mb-4">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-email mr-3"></i>
+                            <span class="h6 mb-0">Support Available for 24/7</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">Support@email.com</a></h4>
+                    </div>
 
-					<div class="footer-contact-block">
-						<div class="icon d-flex align-items-center">
-							<i class="icofont-support mr-3"></i>
-							<span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
-						</div>
-						<h4 class="mt-2"><a href="tel:+23-345-67890">+23-456-6588</a></h4>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-	</div>
+                    <div class="footer-contact-block">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-support mr-3"></i>
+                            <span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">+23-456-6588</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
    
 
@@ -121,4 +162,57 @@ include('includes/dbconfig.php');
 
   </body>
   </html>
- 
+  <?php
+include('includes/dbconfig.php');
+
+if(isset($_POST['register'])){
+    // Sanitize and validate input fields
+    $firstName = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
+    $lastName = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
+    $DOB = $_POST['dob'];
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_STRING);
+    $userType = $_POST['user'];
+    $password = $_POST['password'];
+    $cpassword = $_POST['confirm_password'];
+
+    // Password validation
+    if ($password !== $cpassword) {
+        $error_message = 'Passwords do not match';
+    } else {
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        if($userType === "patient") {
+            $query = "INSERT INTO `users` (FirstName, LastName, DOB, Password, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
+        } elseif($userType === "carer") {
+            $query = "INSERT INTO `carer` (FirstName, LastName, Password, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?)";
+        } else {
+            $error_message = "Invalid user type";
+            exit; // Exit if user type is invalid
+        }
+
+        // Prepare and execute the query
+        $stmt = mysqli_prepare($conn, $query);
+        if($stmt) {
+            if($userType === "patient") {
+                
+                mysqli_stmt_bind_param($stmt, "ssssss", $firstName, $lastName, $DOB, $hashed_password, $email, $number);
+            } else {
+                mysqli_stmt_bind_param($stmt, "sssss", $firstName, $lastName, $hashed_password, $email, $number);
+            }
+
+            if (mysqli_stmt_execute($stmt)) {
+                mysqli_stmt_close($stmt);
+                mysqli_close($conn);
+                header('Location: appoinment.php');
+                exit;
+            } else {
+                $error_message = 'Signup failed. Please try again.';
+            }
+        } else {
+            $error_message = 'Database error. Please try again.';
+        }
+    }
+}
+?>
