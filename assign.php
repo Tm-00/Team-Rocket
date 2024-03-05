@@ -45,6 +45,50 @@ mysqli_close($conn);
 </head>
 
 <body id="top">
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Novena</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownServices" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Services
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
+                            <a class="dropdown-item" href="Loginpage.php">loginpage</a>
+                            <a class="dropdown-item" href="signuppage.php">signuppage</a>
+                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
+                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
+							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
+							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
+							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
+                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class="ml-auto">
+                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
+                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
 
 <section class="contact-form-wrap section">
     <div class="container">

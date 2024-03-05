@@ -72,6 +72,7 @@ include('includes/dbconfig.php');
         </div>
     </nav>
 </header>
+
 <section class="contact-form-wrap section">
     <div class="container">
         <div class="row justify-content-center">
@@ -84,7 +85,7 @@ include('includes/dbconfig.php');
         </div>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form id="contact-form" class="contact__form " method="post" action="">
+                <form  action="" method="post">
                  <!-- form message -->
                     <div class="row">
                         <div class="col-12">
@@ -97,35 +98,26 @@ include('includes/dbconfig.php');
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input name="name" id="name" type="text" class="form-control" placeholder="Your first Name" >
+                                <input name="patient" id="name" type="text" class="form-control" placeholder = "<?php echo $_SESSION['first']." ".$_SESSION['last']?>" >
                             </div>
                         </div>
 
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input name="email" id="email" type="text" class="form-control" placeholder="Your last Address">
-                            </div>
-                        </div>
-                         <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="subject" id="subject" type="tel" class="form-control" placeholder="Your email address">
-                            </div>
-                        </div>
-                         <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="phone" id="phone" type="text" class="form-control" placeholder="Your Phone Number">
+                                <input name="carer" id="email" type="hidden" value="<?php echo getRandomCarerID(); ?>" class="form-control" >
                             </div>
                         </div>
                     </div>
 
                     <div class="text-center">
-                        <input class="btn btn-main btn-round-full" name="request" type="submit" value="Send Messege"></input>
+                        <input class="btn btn-main btn-round-full" name="assign" type="submit" value="ASSIGN"></input>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
+
 
 <!-- footer Start -->
 <footer class="footer section gray-bg">
