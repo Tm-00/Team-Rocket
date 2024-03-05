@@ -12,26 +12,28 @@ if(isset($_POST['register'])){
     $password = $_POST['password'];
     $cpassword = $_POST['confirm_password'];
 
+    
+    
     if ($password !== $cpassword) {
         $error_message = 'Passwords do not match';
         echo $error_message;
     } else {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     if($userType === "patient") {
-        $query = "insert into `carer` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,?)";
+        $query = "insert into `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber) values (?,?,?,?,?,?)";
              $stmt = mysqli_prepare($conn, $query);
 
-    mysqli_stmt_bind_param($stmt, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType);
+    mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
     } elseif($userType === "carer") {
-        $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,?)";
+        $query = "insert into `carer` (FirstName,LastName,Password,Email,PhoneNumber) values (?,?,?,?,?)";
              $stmt = mysqli_prepare($conn, $query);
 
-    mysqli_stmt_bind_param($stmt, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType);
+    mysqli_stmt_bind_param($stmt, "sssss", $firstName,$lastName,$hashed_password,$email,$number);
     }
     
     if (mysqli_stmt_execute($stmt)){
         
-        header('Location: appoinment.php');
+        header('Location: loginpage.php');
         exit; 
     } else {
         
@@ -46,17 +48,34 @@ if(isset($_POST['register'])){
 
 ?>
 
-?>
+<!-- ?>
 $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,'?')";
     $siobhan = mysqli_prepare($conn, $query);
 
-    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType);
+    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType); -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+    <script>
+    function toggleDOBField() {
+        var userType = document.querySelector('input[name="user"]:checked').value;
+        var dobDiv = document.getElementById("dob");
+
+        // If user selects "Carer", hide the DOB field and remove the required attribute; otherwise, show it and add the required attribute
+        if (userType === "carer") {
+            dobDiv.style.display = "none";
+            var dobField = dobDiv.querySelector("input[type='date']");
+            dobField.removeAttribute("required");
+        } else {
+            dobDiv.style.display = "block";
+            var dobField = dobDiv.querySelector("input[type='date']");
+            dobField.setAttribute("required", "true");
+        }
+    }
+</script>
+<style>
         body {
             font-family: Arial, sans-serif;
             background-color: whitesmoke;
@@ -141,9 +160,16 @@ $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber
                 <label for="last"><b>Last Name:</b></label>
                 <input type="text" id="last" name="last" required>
             </div>
+
             <div class="name">
+                <label><b>Type of User:</b></label><br>
+                <input type="radio" name="user" value="patient" onclick="toggleDOBField()" checked> Patient
+                <input type="radio" name="user" value="carer" onclick="toggleDOBField()"> Carer
+            </div>
+
+            <div class="name" id="dob">
                 <label><b>Date of Birth:</b></label><br>
-                <input type="date" name="dob" required><br><br>
+                <input type="date"  name="dob"  required><br><br>
             </div>
 
             <div class="name">
@@ -155,14 +181,7 @@ $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber
                 <label for="phone_number"><b>Phone Number:</b></label>
                 <input type="tel" id="phone_number" name="phone_number" required>
             </div>
-
-            <div class="name">
-                <label><b>Type of User:</b></label><br>
-                <input type="radio" name="user" value="patient">Patient
-                <input type="radio" name="user" value="carer">Carer
-            </div>
          
-
             <div class="name">
                 <label for="password"><b>Password:</b></label>
                 <input type="password" id="password" name="password" required>

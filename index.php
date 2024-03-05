@@ -1,7 +1,16 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
-?>
+
+if(isset($_POST['logout']))
+{
+	session_unset();
+	session_destroy();
+	header( "Refresh:1; url=loginpage.php"); 
+}
+	
+	?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -36,7 +45,7 @@ include('includes/dbconfig.php');
 				<div class="block">
 					<div class="divider mb-3"></div>
 					<span class="text-uppercase text-sm letter-spacing ">Total Health care solution</span>
-					<h1 class="mb-3 mt-3">Your most trusted health partner</h1>
+					<h1 class="mb-3 mt-3">Your most trusted health partner<?php session_start(); echo $_SESSION['first']; ?><?php session_start(); echo " ".$_SESSION['last']; ?><?php session_start(); echo " ".$_SESSION['number']; ?></h1>
 					
 					<p class="mb-4 pr-5"></p>
 					<div class="btn-container ">
@@ -82,6 +91,9 @@ include('includes/dbconfig.php');
 						<span>Emegency Cases</span>
 						<h4 class="mb-3">1-800-700-6200</h4>
 						<p>Call support for emergencies</p>
+						<form method="post">
+	  						<button type="submit" name="logout" style="float:right;background-color:#2B4F76">Log Out</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -165,4 +177,3 @@ include('includes/dbconfig.php');
   </html>
    
 
-'$firstName','$lastName','$DOB','$hashed_password','$email','$number','$userType'

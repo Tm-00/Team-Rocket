@@ -1,60 +1,23 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
-if(isset($_POST['assign'])){  
-    $patient_id = $_SESSION['patient_id'];
-    $carer_id = $_POST['carer'];
-$query = "insert into `assignment` (carer_id, patientID) values (?, ?)";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "ii", $carer_id,$patient_id);
-
-    if (mysqli_stmt_execute($stmt)){
-       
-        header('Location: assign.php');
-
-    } else {
-        
-        header('Location: index.php');
-    }
 
 
-    $stmt->close();
-    $conn->close();
-}
+$patient_id = $_SESSION['patient_id'];
+
+$query = "SELECT c.FirstName AS carer_name
+          FROM assignment a
+          INNER JOIN carer c ON a.carer_id = c.carer_id
+          WHERE a.patientID = ?";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $patient_id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $carer_name);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 
 
-function getRandomCarerID() {
-    include('includes/dbconfig.php');
-    global $conn;
-    $sql = "SELECT carer_id FROM carer ORDER BY RAND() LIMIT 1";
-    
-
-    $result = $conn->query($sql);
-    
-
-    if ($result && $result->num_rows > 0) {
-    
-        $row = $result->fetch_assoc();
-        $random_carer_id = $row["carer_id"];
-        
-     
-        $result->free();
-        
-        return $random_carer_id;
-    } else {
-        
-        return null;
-    }
-}
-
-    
-
-
-
-
-
-
-
+mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -88,43 +51,13 @@ function getRandomCarerID() {
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="section-title text-center">
-                    <h2 class="text-md mb-2">CARER REQUEST FORM</h2>
+                    <h2 class="text-md mb-2">Your Carer is:</h2>
+                    <h2 class="text-md mb-2"><?php echo $carer_name; ?></h2>
                     <div class="divider mx-auto my-4"></div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <form  action="" method="post">
-                 <!-- form message -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="alert alert-success contact__msg" style="display: none" role="alert">
-                                Your message was sent successfully.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="patient" id="name" type="text" class="form-control" placeholder = "<?php echo $_SESSION['first']." ".$_SESSION['last']?>" >
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="carer" id="email" type="hidden" value="<?php echo getRandomCarerID(); ?>" class="form-control" >
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <input class="btn btn-main btn-round-full" name="assign" type="submit" value="ASSIGN"></input>
-                    </div>
-                </form>
-            </div>
-        </div>
+       
     </div>
 </section>
 

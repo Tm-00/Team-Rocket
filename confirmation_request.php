@@ -36,7 +36,7 @@ include('includes/dbconfig.php');
           <div class="confirmation-content text-center">
             <i class="icofont-check-circled text-lg text-color-2"></i>
               <h2 class="mt-3 mb-4">A request has been sent to you</h2>
-              <p>You have been Selected:</p>
+              <p>You have been assigned:</p>
 			  <h3>X</h3>
 			  <div class="button-container">
 				<a class="btn btn-main btn-round-full" href="confirmation1.html">ACCEPT</a>
@@ -121,57 +121,4 @@ include('includes/dbconfig.php');
 
   </body>
   </html>
-  <?php
-include('includes/dbconfig.php');
-
-if(isset($_POST['register'])){
-    // Sanitize and validate input fields
-    $firstName = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
-    $lastName = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
-    $DOB = $_POST['dob'];
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_STRING);
-    $userType = $_POST['user'];
-    $password = $_POST['password'];
-    $cpassword = $_POST['confirm_password'];
-
-    // Password validation
-    if ($password !== $cpassword) {
-        $error_message = 'Passwords do not match';
-    } else {
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        if($userType === "patient") {
-            $query = "INSERT INTO `users` (FirstName, LastName, DOB, Password, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
-        } elseif($userType === "carer") {
-            $query = "INSERT INTO `carer` (FirstName, LastName, Password, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?)";
-        } else {
-            $error_message = "Invalid user type";
-            exit; // Exit if user type is invalid
-        }
-
-        // Prepare and execute the query
-        $stmt = mysqli_prepare($conn, $query);
-        if($stmt) {
-            if($userType === "patient") {
-                
-                mysqli_stmt_bind_param($stmt, "ssssss", $firstName, $lastName, $DOB, $hashed_password, $email, $number);
-            } else {
-                mysqli_stmt_bind_param($stmt, "sssss", $firstName, $lastName, $hashed_password, $email, $number);
-            }
-
-            if (mysqli_stmt_execute($stmt)) {
-                mysqli_stmt_close($stmt);
-                mysqli_close($conn);
-                header('Location: appoinment.php');
-                exit;
-            } else {
-                $error_message = 'Signup failed. Please try again.';
-            }
-        } else {
-            $error_message = 'Database error. Please try again.';
-        }
-    }
-}
-?>
+ 

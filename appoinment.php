@@ -211,7 +211,3 @@ include('includes/dbconfig.php');
 
   </body>
   </html>
-$query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,'?')";
-    $siobhan = mysqli_prepare($conn, $query);
-
-    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType);

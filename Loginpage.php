@@ -11,9 +11,14 @@ if (isset($_POST['login'])) {
     {    
     $email =  $_POST['email'];
     $password =  $_POST['password'];
+    $userType = $_POST['user'];
 
     
-    $query = "SELECT * FROM `users` WHERE Email = '$email'";
+    $table = ($userType == 'carer') ? 'carer' : 'patient';
+
+    // Prepare SQL query
+    $query = "SELECT * FROM `$table` WHERE Email = '$email'";
+    $result = mysqli_query($conn, $query);
         $result = mysqli_query($conn, $query);
         
         if ($result && mysqli_num_rows($result) > 0) {
@@ -21,11 +26,18 @@ if (isset($_POST['login'])) {
             $hashed_password = $row['Password'];
 
             
+            
             if (password_verify($password, $hashed_password)) {
-              
+
+                $_SESSION['carer_id'] = $row['carer_id'];
+                $_SESSION['patient_id'] = $row['patientID'];
                 $_SESSION['first'] = $row['FirstName'];
                 $_SESSION['last'] = $row['LastName'];
-                header("Refresh: 1; url=index.php");
+                $_SESSION['dob'] = $row['DOB'];
+                $_SESSION['email'] = $row['Email'];
+                $_SESSION['number'] = $row['PhoneNumber'];
+                header("Refresh: 1; url=assign.php");
+                exit();
             } else {
                 
                 $error = "Username or Password is invalid";
@@ -134,6 +146,11 @@ if (isset($_POST['login'])) {
             <div class="name">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
+            </div>
+            <div class="name">
+                <label><b>Type of User:</b></label><br>
+                <input type="radio" name="user" value="patient" onclick="toggleDOBField()" checked> Patient
+                <input type="radio" name="user" value="carer" onclick="toggleDOBField()"> Carer
             </div>
 
             <div class="name">
