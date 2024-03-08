@@ -1,14 +1,44 @@
 <?php
-    $select_query="Select * from `Users`";
-    $result_query= mysqli_query($con,$select_query);
-    // $row=mysqli_fetch_assoc($result_query);
-    // echo $row['product_title'];
-    while($row=mysqli_fetch_assoc($result_query)){
-        $first_name=$row['product_id'];
-        $last_name=$row['product_title'];
-       
-                
+session_start();
+include('includes/dbconfig.php');
+
+if(isset($_POST['request'])) {
+    
+
+    $carer_id =  $_POST['carer'];
+    $patient_id = $_SESSION['patient_id'];
+    $date = date('Y-m-d');
+    $time = date('H:i:s');
+
+   
+    $query = "INSERT INTO `appointment` (carer_id, patientID, date, time) VALUES (?,?,?,?)";
+    $stmt = mysqli_prepare($conn, $query);
+    
+   
+    if (!$stmt) {
+        $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+        mysqli_close($conn);
+        header('Location: appointment.php');
+        exit();
     }
+    
+    mysqli_stmt_bind_param($stmt, "iiss", $carer_id, $patient_id, $date, $time);
+
+    if (mysqli_stmt_execute($stmt)) {
+        
+        header('Location: index.php');
+    } 
+    
+
+    
+    mysqli_stmt_close($stmt);
+
+    
+    mysqli_close($conn);
+
+
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -37,21 +67,90 @@
 
 <body id="top">
 	
-<section class="section confirmation">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-          <div class="confirmation-content text-center">
-            <i class="icofont-check-circled text-lg text-color-2"></i>
-              <h2 class="mt-3 mb-4">Your request has been sent</h2>
-              <p>You have been assigned:</p>
-			  <h3><?php
-        
-        echo $last_name . "," . $first_name;?></h3>
-          </div>
-      </div>
+<section class="contact-form-wrap section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="section-title text-center">
+                    <h2 class="text-md mb-2">APPOINTMENT REQUEST FORM</h2>
+                    <div class="divider mx-auto my-4"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <form method="post" action="">
+                 <!-- form message -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-success contact__msg" style="display: none" role="alert">
+                                Your message was sent successfully.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>First Name:</b></label>
+                                <input name="name" id="name" type="text" class="form-control" value="<?php echo $_SESSION['first']?>" placeholder="Your first Name" >
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Last Name:</b></label>
+                                <input name="email" id="email" type="text" class="form-control" value="<?php echo $_SESSION['last']?>" placeholder="Your Last Name">
+                            </div>
+                        </div>
+                         <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Email Address:</b></label>   
+                                <input name="subject" id="subject" type="tel" class="form-control" value="<?php echo $_SESSION['email']?>" placeholder="Your Email address">
+                            </div>
+                        </div>
+                         <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Phone Number:</b></label>
+                                <input name="phone" id="phone" type="text" class="form-control" value="<?php echo $_SESSION['number']?>" placeholder="Your Phone Number">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Carer:</b></label>
+                                
+                                <select name="carer" id="" class="form-control">
+                                    <option value="">Select a Category</option>
+                                    <?php
+                                        $select_query = "SELECT * FROM `assignment` WHERE patientID=?";
+                                        $stmt = mysqli_prepare($conn, $select_query);
+                                        mysqli_stmt_bind_param($stmt, "i", $_SESSION['patient_id']);
+                                        mysqli_stmt_execute($stmt);
+                                        $result = mysqli_stmt_get_result($stmt);
+                                        
+                                        
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $carer = $row['carer_id'];
+                                            echo "<option value='$carer'>$carer</option>";
+                                        }
+                                        
+                                        mysqli_stmt_close($stmt);
+                                        
+
+
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <input class="btn btn-main btn-round-full" name="request" type="submit" value="Request Appointment Call">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- footer Start -->
@@ -125,55 +224,4 @@
 
   </body>
   </html>
-  <?php
-include('includes/dbconfig.php');
-
-if(isset($_POST['register'])){
-    // Sanitize and validate input fields
-    $firstName = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
-    $lastName = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_STRING);
-    $DOB = $_POST['dob'];
-    $userType = $_POST['user'];
-    $addressid = 21;
-    $password = $_POST['password'];
-    $cpassword = $_POST['confirm_password'];
-
-    // Password validation
-    if ($password !== $cpassword) {
-        $error_message = 'Passwords do not match';
-    } else {
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        if($userType === "patient") {
-            $query = "insert into `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber,AddressIDD) values (?,?,?,?,?,?,?)";
-        } elseif($userType === "carer") {
-            $query = "insert into `carer` (FirstName,LastName,DOB,Password,Email,PhoneNumber) values (?,?,?,?,?,?)";
-        }
-        // echo "Query: " . $query; // Add this line
-
-        // Prepare and execute the query
-        $stmt = mysqli_prepare($conn, $query);
-            if($userType === "patient") {
-                mysqli_stmt_bind_param($stmt, "ssssssi", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$addressid);
-            } elseif($userType === "carer") {
-                mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
-            }
-            // echo "Query: " . $stmt; // Add this line
-
-            if (mysqli_stmt_execute($stmt)) {
-                header('Location: appoinment.php');
-                exit;
-            } else {
-                $error_message = 'Signup failed. Please try again.';
-                error_log("Signup failed: " . mysqli_error($conn)); // Log detailed error message
-                echo "Error: " . mysqli_error($conn); // Add this line to display error
-            }
-            mysqli_stmt_close($stmt);
-        }
-        mysqli_close($conn);
-    }
-
-?>
+ 

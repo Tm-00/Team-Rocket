@@ -1,6 +1,38 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
+
+$carer_id = $_SESSION['carer_id'];
+$query = "SELECT a.*, p.FirstName, p.LastName, p.Email, p.PhoneNumber 
+          FROM appointment a 
+          INNER JOIN patient p ON a.patientID = p.patientID 
+          WHERE a.carer_id = ?";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $carer_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if(isset($_POST['update'])) {
+    
+    $appointment_id = $_POST['app_id']; 
+    $date = $_POST['date'];
+    $time = $_POST['time'];
+
+    
+    $query = "UPDATE appointment SET date = ?, time = ? WHERE appointment_id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ssi", $date, $time, $appointment_id);
+    
+    
+     mysqli_stmt_execute($stmt);
+
+    
+     if(mysqli_stmt_affected_rows($stmt) > 0) {
+        header("refresh:0");
+    } else {
+        echo "Failed to update appointment.". mysqli_error($conn);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -81,8 +113,8 @@ include('includes/dbconfig.php');
     <div class="row">
       <div class="col-md-12">
         <div class="block text-center">
-          <span class="text-white">Book your Seat</span>
-          <h1 class="text-capitalize mb-5 text-lg">Appoinment</h1>
+          <span class="text-white">SET APPOINTMENT TIMES</span>
+          <h1 class="text-capitalize mb-5 text-lg">Appoinment Requests</h1>
 
           <!-- <ul class="list-inline breadcumb-nav">
             <li class="list-inline-item"><a href="index.html" class="text-white">Home</a></li>
@@ -94,90 +126,46 @@ include('includes/dbconfig.php');
     </div>
   </div>
 </section>
-
-<section class="appoinment section">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4">
-          <div class="mt-3">
-            <div class="feature-icon mb-3">
-              <i class="icofont-support text-lg"></i>
-            </div>
-             <span class="h3">Call for an Emergency Service!</span>
-              <h2 class="text-color mt-3">+0000000</h2>
-          </div>
-      </div>
-
-      <div class="col-lg-8">
-           <div class="appoinment-wrap mt-5 mt-lg-0 pl-lg-5">
-            <h2 class="mb-2 title-color">Book an appoinment</h2>
-            
-               <form id="#" class="appoinment-form" method="post" action="#">
-                    <div class="row">
-                         <div class="col-lg-6">
-                            <div class="form-group">
-                                <select class="form-control" id="exampleFormControlSelect1">
-                                  <option>Choose Department</option>
-                                  <option>Software Design</option>
-                                  <option>Development cycle</option>
-                                  <option>Software Development</option>
-                                  <option>Maintenance</option>
-                                  <option>Process Query</option>
-                                  <option>Cost and Duration</option>
-                                  <option>Modal Delivery</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <select class="form-control" id="exampleFormControlSelect2">
-                                  <option>Choose a Doctor</option>
-								  <option>Siobhan</option>
-                                  <option>Taeshon</option>
-                                  <option>Devon</option>
-                                  <option>Chirag</option>
-                                  <option>Mohammed</option>
-                                  <option>Roland</option>
-                                  <option>Nobel Prize Winner Dr Ibrahim</option>
-                                  <option>Modal Delivery</option>
-                                </select>
-                            </div>
-                        </div>
-
-                         <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="date" id="date" type="text" class="form-control" placeholder="dd/mm/yyyy">
-								<script>
-									// Initialize Flatpickr
-									flatpickr("#date", {
-										dateFormat: "d/m/Y", // Set the date format
-										allowInput: true // Allow manual input
-									});
-								</script>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input name="time" id="time" type="text" class="form-control" placeholder="Time">
-                            </div>
-                        </div>
-                         
-
-                    </div>
-                    <div class="form-group-2 mb-4">
-                        <textarea name="message" id="message" class="form-control" rows="6" placeholder="Your Message"></textarea>
-                    </div>
-
-                    <a class="btn btn-main btn-round-full" href="confirmation_patient.html">Make Appoinment<i class="icofont-simple-right ml-2"></i></a>
-                </form>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<div class="container">
+    <h2>Your Appointments</h2>
+    <?php if (mysqli_num_rows($result) > 0): ?>
+        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <form action="" method="post">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Appointment Date</th>
+                            <th>Appointment Time</th>
+                            <th>SET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo $row['appointment_id']; ?></td>
+                            <td><?php echo $row['FirstName']; ?></td>
+                            <td><?php echo $row['LastName']; ?></td>
+                            <td><?php echo $row['Email']; ?></td>
+                            <td><?php echo $row['PhoneNumber']; ?></td>
+                            <td><input type="date" name="date" value="<?php echo $row['date']; ?>"></td>
+                            <td><input type="time" name="time" value="<?php echo $row['time']; ?>"></td>
+                            <td>
+                                <input type="hidden" value="<?php echo $row['appointment_id']; ?>" name="app_id">
+                                <input type="submit" name="update" value="Update">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No appointments found.</p>
+    <?php endif; ?>
+</div>
 
 <!-- footer Start -->
 <footer class="footer section gray mt-5">
@@ -251,7 +239,3 @@ include('includes/dbconfig.php');
 
   </body>
   </html>
-$query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,'?')";
-    $siobhan = mysqli_prepare($conn, $query);
-
-    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType);

@@ -5,19 +5,16 @@ include('includes/dbconfig.php');
 
 $patient_id = $_SESSION['patient_id'];
 
-$query = "SELECT c.FirstName AS carer_name
+$query = "SELECT c.FirstName, c.LastName
           FROM assignment a
           INNER JOIN carer c ON a.carer_id = c.carer_id
           WHERE a.patientID = ?";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $patient_id);
 mysqli_stmt_execute($stmt);
-mysqli_stmt_bind_result($stmt, $carer_name);
-mysqli_stmt_fetch($stmt);
-mysqli_stmt_close($stmt);
+mysqli_stmt_bind_result($stmt, $first_name,$last_name);
 
 
-mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -95,9 +92,14 @@ mysqli_close($conn);
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="section-title text-center">
-                    <h2 class="text-md mb-2">Your Carer is:</h2>
-                    <h2 class="text-md mb-2"><?php echo $carer_name; ?></h2>
-                    <div class="divider mx-auto my-4"></div>
+                <h2 class="text-md mb-2">Your Carers are:</h2>
+                      <?php
+            // Display all assigned carers
+            while (mysqli_stmt_fetch($stmt)) {
+              $assigned_carer_name = $first_name . " " . $last_name;
+              echo "<h2 class='text-md mb-2'>$assigned_carer_name</h2>";
+            }
+            ?>
                 </div>
             </div>
         </div>
@@ -177,3 +179,7 @@ mysqli_close($conn);
 
   </body>
   </html>
+  <?php
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
+?>

@@ -8,7 +8,6 @@ if(isset($_POST['register'])){
     $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_STRING);
     $DOB = $_POST['dob'];
     $userType = $_POST['user'];
-    $addressid = 21; // Assuming this is a valid address ID
     $password = $_POST['password'];
     $cpassword = $_POST['confirm_password'];
 

@@ -16,10 +16,10 @@ if (isset($_POST['login'])) {
     
     $table = ($userType == 'carer') ? 'carer' : 'patient';
 
-    // Prepare SQL query
+   
     $query = "SELECT * FROM `$table` WHERE Email = '$email'";
     $result = mysqli_query($conn, $query);
-        $result = mysqli_query($conn, $query);
+    $result = mysqli_query($conn, $query);
         
         if ($result && mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
@@ -29,14 +29,15 @@ if (isset($_POST['login'])) {
             
             if (password_verify($password, $hashed_password)) {
 
-                $_SESSION['carer_id'] = $row['carer_id'];
+                $_SESSION['userType'] = $userType;
                 $_SESSION['patient_id'] = $row['patientID'];
+                $_SESSION['carer_id'] = $row['carer_id'];
                 $_SESSION['first'] = $row['FirstName'];
                 $_SESSION['last'] = $row['LastName'];
                 $_SESSION['dob'] = $row['DOB'];
                 $_SESSION['email'] = $row['Email'];
                 $_SESSION['number'] = $row['PhoneNumber'];
-                header("Refresh: 1; url=assign.php");
+                header("Refresh: 1; url=index.php");
                 exit();
             } else {
                 

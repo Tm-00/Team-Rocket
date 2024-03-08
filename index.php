@@ -1,10 +1,18 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
+
+if(isset($_POST['logout']))
+{
+	session_unset();
+	session_destroy();
+	header( "Refresh:1; url=index.php"); 
+}
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
+    
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="description" content="Orbitor,business,company,agency,modern,bootstrap4,tech,software">
   <meta name="author" content="themefisher.com">
@@ -65,9 +73,15 @@ include('includes/dbconfig.php');
                     </li>
                 </ul>
                 <div class="ml-auto">
-                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
-                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
-                </div>
+                        <?php if(isset($_SESSION['patient_id'])): ?>
+                            <form method="post">
+                                <button type="submit" name="logout" class="btn btn-outline-dark">Log Out</button>
+                            </form>
+                        <?php else: ?>
+                            <a href="loginpage.php" class="btn btn-outline-dark">Login</a>
+                            <a href="signuppage.php" class="btn btn-outline-dark">Sign Up</a>
+                        <?php endif; ?>
+                    </div>
             </div>
         </div>
     </nav>
@@ -85,7 +99,7 @@ include('includes/dbconfig.php');
 					
 					<p class="mb-4 pr-5"></p>
 					<div class="btn-container ">
-						<a href="appoinment.php" target="_blank" class="btn btn-main-2 btn-icon btn-round-full">Make appoinment <i class="icofont-simple-right ml-2  "></i></a>
+						<a href = "assign_carer.php" target="_blank" class="btn btn-main btn-round-full btn-get-carer">Get a Carer <i class="icofont-simple-right ml-2  "></i></a>
 					</div>
 				</div>
 			</div>
@@ -104,7 +118,7 @@ include('includes/dbconfig.php');
 						<span>24 Hours Service</span>
 						<h4 class="mb-3">Online Appoinment</h4>
 						<p class="mb-4">Gettime support for emergency.</p>
-						<a href="appoinment.php" class="btn btn-main btn-round-full">Make a appoinment</a>
+						<a href = "confirmation_patient.php" target="_blank" class="btn btn-main btn-round-full btn-make-appointment">Make a appoinment</a>
 					</div>
 				
 					<div class="feature-item mb-5 mb-lg-0">
@@ -202,9 +216,35 @@ include('includes/dbconfig.php');
     
     <script src="js/script.js"></script>
     <script src="js/contact.js"></script>
+    <script>
+$(document).ready(function() {
+    
+    $(".btn-make-appointment").click(function() {
+        
+        <?php if (isset($_SESSION['patient_id'])): ?>
+         
+            window.location.href = "confirmation_patient.php";
+        <?php else: ?>
+     
+            window.location.href = "loginpage.php";
+        <?php endif; ?>
+    });
+});
+$(document).ready(function() {
+    
+    $(".btn-get-carer").click(function() {
+        
+        <?php if (isset($_SESSION['patient_id'])): ?>
+      
+            window.location.href = "assign_carer.php";
+        <?php else: ?>
+            
+            window.location.href = "loginpage.php";
+        <?php endif; ?>
+    });
+});
+</script>
 
   </body>
   </html>
    
-
-'$firstName','$lastName','$DOB','$hashed_password','$email','$number','$userType'

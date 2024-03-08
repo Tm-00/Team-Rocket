@@ -1,6 +1,62 @@
 <?php
 session_start();
 include('includes/dbconfig.php');
+if(isset($_POST['assign'])){  
+    $patient_id = $_SESSION['patient_id'];
+    $carer_id = $_POST['carer'];
+    $_SESSION['carer_id'] = $carer_id;
+$query = "insert into `assignment` (carer_id, patientID) values (?, ?)";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ii", $carer_id,$patient_id);
+
+    if (mysqli_stmt_execute($stmt)){
+       
+        header('Location: assign.php');
+
+    } else {
+        
+        header('Location: index.php');
+    }
+
+
+    $stmt->close();
+    $conn->close();
+}
+
+
+function getRandomCarerID() {
+    include('includes/dbconfig.php');
+    global $conn;
+    $sql = "SELECT carer_id FROM carer ORDER BY RAND() LIMIT 1";
+    
+
+    $result = $conn->query($sql);
+    
+
+    if ($result && $result->num_rows > 0) {
+    
+        $row = $result->fetch_assoc();
+        $random_carer_id = $row["carer_id"];
+        
+     
+        $result->free();
+        
+        
+        return $random_carer_id;
+    } else {
+        
+        return null;
+    }
+}
+
+    
+
+
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="zxx">
@@ -28,50 +84,6 @@ include('includes/dbconfig.php');
 </head>
 
 <body id="top">
-<header class="header">
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">Novena</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownServices" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Services
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
-                            <a class="dropdown-item" href="Loginpage.php">loginpage</a>
-                            <a class="dropdown-item" href="signuppage.php">signuppage</a>
-                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
-                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
-							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
-							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
-							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
-                        </div>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-                <div class="ml-auto">
-                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
-                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
 
 <section class="contact-form-wrap section">
     <div class="container">
@@ -104,7 +116,7 @@ include('includes/dbconfig.php');
 
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <input name="carer" id="email" type="hidden" value="<?php echo getRandomCarerID(); ?>" class="form-control" >
+                                <input name="carer" id="email" type="hidden" value="<?php echo getRandomCarerID()?>" class="form-control" >
                             </div>
                         </div>
                     </div>
@@ -117,7 +129,6 @@ include('includes/dbconfig.php');
         </div>
     </div>
 </section>
-
 
 <!-- footer Start -->
 <footer class="footer section gray-bg">
@@ -132,6 +143,7 @@ include('includes/dbconfig.php');
 					<ul class="list-inline footer-socials mt-4">
 						<li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
 						<li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+						<li class="list-inline-item"><a href="#"><i class="icofont-linkedin"></i></a></li>
 					</ul>
 				</div>
 			</div>
