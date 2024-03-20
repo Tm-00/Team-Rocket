@@ -1,7 +1,17 @@
 <?php
+
+// <NAME> IBRAHIM SULU-GAMBARI, SIOBHAN UTETE
+// <CONTRIBUTION TO THIS PAGE> ALL THE PHP PRESENT HERE
+// WITH  THE USE OF PHP
+
 include('includes/dbconfig.php');
+
 if(isset($_POST['register'])){   
-    
+    // <NAME> SIOBHAN UTETE
+    // <CONTRIBUTION TO THIS PAGE> SECURING THE WEBSITE BY SANITIZING AND FILTERING
+    // WITH  THE USE OF PHP
+
+    // (these lines of code sanitize user inputs)
     $firstName = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
     $lastName = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -11,47 +21,60 @@ if(isset($_POST['register'])){
     $password = $_POST['password'];
     $cpassword = $_POST['confirm_password'];
 
-    
-    
+    // Check if passwords match
     if ($password !== $cpassword) {
         $error_message = 'Passwords do not match';
         echo $error_message;
     } else {
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    if($userType === "patient") {
-        $query = "insert into `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber) values (?,?,?,?,?,?)";
-             $stmt = mysqli_prepare($conn, $query);
-
-    mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
-    } elseif($userType === "carer") {
-        $query = "insert into `carer` (FirstName,LastName,Password,Email,PhoneNumber) values (?,?,?,?,?)";
-             $stmt = mysqli_prepare($conn, $query);
-
-    mysqli_stmt_bind_param($stmt, "sssss", $firstName,$lastName,$hashed_password,$email,$number);
+        // Check if account already exists
+        if($userType==="patient"){
+            $check = "SELECT * FROM `patient` WHERE FirstName = ? AND LastName = ? AND Email= ?";    
+            $stmt = mysqli_prepare($conn, $check);
+        } elseif($userType==="carer"){
+            $check = "SELECT * FROM `carer` WHERE FirstName = ? AND LastName = ? AND Email= ?";  
+            $stmt = mysqli_prepare($conn, $check);        
+        }
+        mysqli_stmt_bind_param($stmt, "sss",$firstName, $lastName ,$email);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if(mysqli_num_rows($result) > 0){
+            $error = "Account already exists";
+            echo $error;
+            header("Refresh: 2; url=loginpage.php");
+            exit();
+        } else {
+            // Hash the password
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            if($userType === "patient") {
+                $query = "INSERT INTO `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber) VALUES (?,?,?,?,?,?)";
+                $stmt = mysqli_prepare($conn, $query);
+                mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
+            } elseif($userType === "carer") {
+                $query = "INSERT INTO `carer` (FirstName,LastName,Password,Email,PhoneNumber) VALUES (?,?,?,?,?)";
+                $stmt = mysqli_prepare($conn, $query);
+                mysqli_stmt_bind_param($stmt, "sssss", $firstName,$lastName,$hashed_password,$email,$number);
+            }
+            
+            // Execute the query
+            if (mysqli_stmt_execute($stmt)){
+                // Redirect to loginpage.php on successful signup
+                header('Location: loginpage.php');
+                exit; 
+            } else {
+                // Display error message if signup failed
+                $error_message = 'Signup failed';
+                echo $error_message;
+            }
+        }
     }
-    
-    if (mysqli_stmt_execute($stmt)){
-        
-        header('Location: loginpage.php');
-        exit; 
-    } else {
-        
-        $error_message = 'Signup failed';
-         echo $error_message;
-    }
-    mysqli_stmt_close($siobhan);
-}
-    
+    // Close the statement and database connection
+    mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
 
 ?>
 
-<!-- ?>
-$query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,'?')";
-    $siobhan = mysqli_prepare($conn, $query);
 
-    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType); -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +97,19 @@ $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber
         }
     }
 </script>
+
+<!-- 
+    <NAME> OLADIPUPO ROLAND FAMILUA 
+    <CONTRIBUTION TO THIS PAGE> IS CREATING THE FRONT END OF THE SIGN UP  
+    WITH  THE USE OF HTML AND CSS 
+    
+-->
+    <!-- 
+        below is the style ...as in design of how the page looks like  and also adjusting the  contents
+    -->
 <style>
+    
+
         body {
             font-family: Arial, sans-serif;
             background-color: whitesmoke;
@@ -150,51 +185,62 @@ $query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber
 
     <div class="signupbracket">
         <h2>Sign Up</h2>
+
         <form class="Username" action="" method="post">
             <div class="name">
+                <!-- this retrives the firt name  -->
                 <label for="first"><b>First Name:</b></label>
                 <input type="text" id="first" name="first" required>
             </div>
+            <!-- this retrives the rlast name -->
             <div class="name">
                 <label for="last"><b>Last Name:</b></label>
                 <input type="text" id="last" name="last" required>
             </div>
 
             <div class="name">
+           <!-- if your choice is to sign in as a career or a patient
+            Each radio button represents a type of user: "Patient" and "Carer". 
+            The name attribute for both radio buttons is set to
+             "user", indicating that they belong to the same group, 
+             and only one option can be selected at a time as seen below below-->
                 <label><b>Type of User:</b></label><br>
                 <input type="radio" name="user" value="patient" onclick="toggleDOBField()" checked> Patient
                 <input type="radio" name="user" value="carer" onclick="toggleDOBField()"> Carer
             </div>
-
+            <!-- this retrives the date of birth-->
             <div class="name" id="dob">
                 <label><b>Date of Birth:</b></label><br>
                 <input type="date"  name="dob"  required><br><br>
             </div>
-
+            <!-- this retrives theemail-->
             <div class="name">
                 <label for="email"><b>Email:</b></label>
                 <input type="email" id="email" name="email" required>
             </div>
-
+            <!-- this retrives the phone number-->
             <div class="name">
                 <label for="phone_number"><b>Phone Number:</b></label>
                 <input type="tel" id="phone_number" name="phone_number" required>
             </div>
-         
+         <!-- this retrives the password -->
             <div class="name">
                 <label for="password"><b>Password:</b></label>
                 <input type="password" id="password" name="password" required>
             </div>
-
+            <!-- this retrives the same pass word as the one insert , just to confirm if the password are the same  -->
             <div class="name">
                 <label for="confirm-password"><b>Confirm Password:<b></label>
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
-
+              <!--this submits the information insert above  -->
             <div class="name">
                 <input type="submit" class = "register"  name="register" value="Submit">
             </div>
         </form>
+          <!-- 
+            in case one doesnt have an ACCOUNT  he or she has to sign up
+          -->
         <div>
             Have an Account already
             <a href="./Loginpage.php">Log in</a>

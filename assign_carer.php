@@ -1,63 +1,85 @@
 <?php
+
+// <NAME> IBARHIM SULU-GAMBARI
+// <CONTRIBUTION TO THIS PAGE> The entire page apart from the header 
+// WITH  THE USE OF HTML,CSS and PHP
+
+// (these lines of code start a PHP session)
 session_start();
+
+// (these lines of code include the database configuration file)
 include('includes/dbconfig.php');
+
 if(isset($_POST['assign'])){  
-    $patient_id = $_SESSION['patient_id'];
-    $carer_id = $_POST['carer'];
+    // <NAME> SIOBHAN UTETE
+    // <CONTRIBUTION TO THIS PAGE> SECURING THE WEBSITE BY SANITIZING AND FILTERING
+    // WITH  THE USE OF PHP
+
+    // (these lines of code retrieve the patient ID from the session and sanitize it)
+    $patient_id = filter_var($_SESSION['patient_id'], FILTER_SANITIZE_NUMBER_INT);
+    // (these lines of code retrieve the carer ID from the form and sanitize it)
+    $carer_id = filter_var($_POST['carer'], FILTER_SANITIZE_NUMBER_INT);
     $_SESSION['carer_id'] = $carer_id;
-$query = "insert into `assignment` (carer_id, patientID) values (?, ?)";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "ii", $carer_id,$patient_id);
 
-    if (mysqli_stmt_execute($stmt)){
-       
-        header('Location: assign.php');
+    // Check if maximum number of carers reached for the patient
+    $check = "SELECT * FROM `assignment` WHERE patientID = ?";
+    $stmt = mysqli_prepare($conn, $check);
+    mysqli_stmt_bind_param($stmt, "i",$patient_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    } else {
-        
-        header('Location: index.php');
+    if(mysqli_num_rows($result) > 0){
+        // (these lines of code set an error message if the maximum number of carers is reached)
+        $error = "MAXIMUM NUMBER OF CARERS REACHED";
+        echo $error;
+        header("Refresh: 2; url=assign_carer.php");
     }
-
+    else{
+        // Insert assignment into database
+        $query = "INSERT INTO `assignment` (carer_id, patientID) VALUES (?, ?)";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "ii", $carer_id,$patient_id);
+        
+        if (mysqli_stmt_execute($stmt)){
+            // Redirect to assign.php on successful assignment
+            header('Location: assign.php');
+        } else {
+            // Redirect to index.php on failure
+            header('Location: index.php');
+        }
+    }
 
     $stmt->close();
     $conn->close();
 }
 
-
 function getRandomCarerID() {
-    include('includes/dbconfig.php');
     global $conn;
-    $sql = "SELECT carer_id FROM carer ORDER BY RAND() LIMIT 1";
-    
 
-    $result = $conn->query($sql);
+    // Query to get a random available carer ID
+    $sql = "SELECT carer.carer_id 
+            FROM carer
+            LEFT JOIN assignment ON carer.carer_id = assignment.carer_id
+            WHERE assignment.patientID IS NULL
+            ORDER BY RAND() 
+            LIMIT 1";
     
+    $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
-    
         $row = $result->fetch_assoc();
         $random_carer_id = $row["carer_id"];
-        
-     
         $result->free();
-        
-        
         return $random_carer_id;
     } else {
-        
         return null;
     }
 }
-
-    
-
-
-
-
-
-
-
 ?>
+<!-- // <NAME> MUHAMMED UMER
+// <CONTRIBUTION TO THIS PAGE> THE FRONT-END OF THE HEADER
+// WITH  THE USE OF HTML AND CASS -->
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -77,14 +99,14 @@ function getRandomCarerID() {
   <!-- Slick Slider  CSS -->
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick.css">
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick-theme.css">
-  <script src="https://kit.fontawesome.com/fbed98dcbf.js" crossorigin="anonymous"></script
+
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body id="top">
-<header class="header">
+<header class="header fixed-top">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="#">Novena</a>
@@ -93,7 +115,7 @@ function getRandomCarerID() {
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
@@ -102,29 +124,36 @@ function getRandomCarerID() {
                             Services
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
-                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
-                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
-							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
-							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
-							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
+                            <a class="dropdown-item" href="">carer packages</a>
+                            <a class="dropdown-item" href="">prices</a>
+                            <a class="dropdown-item" href="faciulty tour"></a>
+                            <a class="dropdown-item" href="">home care</a>
+                            <a class="dropdown-item" href="">memoery care</a>
                         </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="blog.php">Blog</a>
                     </li>
                 </ul>
-                <div class="ml-lg-4">
-                    <a href="#" class="btn btn-main mr-3">Schedule a Consultation</a>
-                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
-                </div>
-                 <form method="post">
+                
+                <div class="login-buttons ml-auto">
+                    <?php if (isset($_SESSION['patient_id']) || isset($_SESSION['carer_id'])) : ?>
+                        <form method="post">
                             <button type="submit" name="logout" class="btn btn-outline-dark">Log Out</button>
                         </form>
+                    <?php else: ?>
+                        <div>
+                            <a href="loginpage.php" class="btn btn-outline-dark">Login</a>
+                            <a href="signuppage.php" class="btn btn-outline-dark">Sign Up</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </nav>
 </header>
 
-<section class="contact-form-wrap section">
+<section class="contact-form-wrap section" style="padding-top: 10px; margin-top: 130px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
@@ -136,7 +165,7 @@ function getRandomCarerID() {
         </div>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                <form  action="" method="post">
+                <form  action="" method="pos t">
                  <!-- form message -->
                     <div class="row">
                         <div class="col-12">
@@ -170,46 +199,46 @@ function getRandomCarerID() {
 </section>
 
 <!-- footer Start -->
-<footer>
-    <div class="row">
-        <div class="col">
-                <p>Novena Health & Care Medical Center is renowned for its exceptional healthcare services. With an unwavering dedication to our patients' welfare, we embrace compassion, expertise, and ingenuity in all facets of our care. From state-of-the-art medical procedures to individualized attention, we place your health journey at the forefront. At Novena Health & Care, we go beyond being mere providers; we become allies on your quest for well-being, offering unmatched assistance and direction at every juncture. Count on us to provide top-tier medical care,
-                as your health always comes first in our practice.</p>
-                </div>
-                <div class="col">
-                    <h3>Contact Details</h3>
-                    <p>Support Available for 24/7 </p>
-                    <p>Mon to Fri : 08:30 - 18:00</p> 
-                    <p class="email-id">Support@email.com</p>
-                    <h4>+23-456-6588</h4>
-                 </div>
-                <div class="col">
-                    <h3>Links</h3>
-                    <ul>
-                        <li><a href="">About us</a></li>
-                        <li><a href="">contact form</a></li>
-                        <li><a href="https://www.gov.uk/help/privacy-notice">Privacy Poilices</a></li>
-                        <li><a href="https://www.gov.uk/copyright">Copy Rights</a></li>
-                     </ul>
-                </div>
-                <div class="col">
-                    <h3>News letter</h3>
-                    <form>
-                    <i class="fa-regular fa-envelope"></i>
-                        <input Type="email" placeholder="enter your email id" required>
-                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
-                    </form>
-                    <div class="Social-icons">
-                        <i class="fa-brands fa-linkedin"></i>
-                        <i class="fa-brands fa-twitter"></i>
-                        <i class="fa-brands fa-pinterest"></i>
-                        <i class="fa-brands fa-square-instagram"></i>
+<footer  id= "footer" class="footer gray-bg" style="padding-top: 10px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mr-auto col-sm-6">
+                <div class="widget mb-5 mb-lg-0">
+                    <div class="logo mb-4">
+                        <img src="images/Arrow_logo.png" alt="" class="img-fluid">
                     </div>
-                        
+
+                    <ul class="list-inline footer-socials mt-4">
+                        <li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="widget widget-contact mb-5 mb-lg-0">
+                    <h4 class="text-capitalize mb-3 footer-heading">Get in Touch</h4>
+                    <div class="divider mb-4"></div>
+                    <div class="footer-contact-block mb-4">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-email mr-3"></i>
+                            <span class="h6 mb-0">Support Available for 24/7</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">Support@email.com</a></h4>
+                    </div>
+                    <div class="footer-contact-block">
+						<div class="icon d-flex align-items-center">
+							<i class="icofont-support mr-3"></i>
+							<span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
+						</div>
+						<h4 class="mt-2"><a href="tel:+23-345-67890">+23-456-6588</a></h4>
+					</div>
+
+                    
+                </div>
+            </div>
         </div>
-        <hr>
-        <p class="copyright">Novena Health & Carers Medical site @ 2024 ~ All Rights Reserved</p>
+    </div>
 </footer>
 
     <!-- 

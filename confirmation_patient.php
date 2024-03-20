@@ -1,7 +1,66 @@
 <?php
+
+// <NAME> IBARHIM SULU-GAMBARI
+// <CONTRIBUTION TO THIS PAGE> The entire page apart from the  header 
+// WITH  THE USE OF HTML,CSS and PHP
+
+// (these lines of code start a PHP session)
 session_start();
+
+// (these lines of code include the database configuration file)
 include('includes/dbconfig.php');
+
+if(isset($_POST['request'])) {
+     // <NAME> SIOBHAN UTETE
+    // <CONTRIBUTION TO THIS PAGE> SECURING THE WEBSITE BY SANITIZING AND FILTERING
+    // WITH  THE USE OF PHP
+
+
+    // (these lines of code retrieve the carer ID from the form and sanitize it)
+    $carer_id =  filter_var($_POST['carer'], FILTER_SANITIZE_NUMBER_INT);
+    // (these lines of code retrieve the patient ID from the session)
+    $patient_id = filter_var($_SESSION['patient_id'], FILTER_SANITIZE_NUMBER_INT);
+    // (these lines of code retrieve the current date)
+    $date = date('Y-m-d');
+    // (these lines of code set the time to "00:00")
+    $time = "00:00";
+
+    // Prepare and execute SQL query to insert appointment request
+    $query = "INSERT INTO `appointment` (carer_id, patientID, date, time) VALUES (?,?,?,?)";
+    $stmt = mysqli_prepare($conn, $query);
+
+    // Check for database errors
+    if (!$stmt) {
+        // (these lines of code set an error message in the session)
+        $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+        mysqli_close($conn);
+        // (these lines of code redirect back to the appointment page)
+        header('Location: appointment.php');
+        exit();
+    }
+    
+    // Bind parameters and execute the statement
+    mysqli_stmt_bind_param($stmt, "iiss", $carer_id, $patient_id, $date, $time);
+
+    if (mysqli_stmt_execute($stmt)) {
+        // (these lines of code redirect to the index page on successful appointment request)
+        header('Location: appontment_patient.php');
+    } 
+
+    // Close the statement and database connection
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+
+    // Exit the script
+    exit();
+}
 ?>
+
+<!-- // <NAME> MUHAMMED UMER
+// <CONTRIBUTION TO THIS PAGE> THE FRONT-END OF THE HEADER
+// WITH  THE USE OF HTML AND CSS -->
+
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -21,14 +80,14 @@ include('includes/dbconfig.php');
   <!-- Slick Slider  CSS -->
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick.css">
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick-theme.css">
-  <script src="https://kit.fontawesome.com/fbed98dcbf.js" crossorigin="anonymous"></script>
+
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body id="top">
-<header class="header">
+<header class="header fixed-top">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="#">Novena</a>
@@ -46,90 +105,163 @@ include('includes/dbconfig.php');
                             Services
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownServices">
-                            <a class="dropdown-item" href="appoinment.php">appoinment</a>
-                            <a class="dropdown-item" href="assign_carer.php">assigned carer</a>
-							<a class="dropdown-item" href="confirmation_pstient.php">patient confirmation</a>
-							<a class="dropdown-item" href="confirmation_request.php">confirmation request</a>
-							<a class="dropdown-item" href="confirmation1.php">confirmation</a>
+                            <a class="dropdown-item" href="">carer packages</a>
+                            <a class="dropdown-item" href="">prices</a>
+                            <a class="dropdown-item" href="faciulty tour"></a>
+                            <a class="dropdown-item" href="">home care</a>
+                            <a class="dropdown-item" href="">memoery care</a>
                         </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="blog.php">Blog</a>
                     </li>
                 </ul>
-                <div class="ml-auto">
-                    <a href="appoinment.php" class="btn btn-main mr-3">Schedule a appoinment</a>
-                    <a href="#" class="btn btn-outline-light">Emergency Contacts</a>
-                </div>
+                
                 <div class="login-buttons ml-auto">
-                    <?php if(isset($_SESSION['patient_id'])): ?>
+                    <?php if (isset($_SESSION['patient_id']) || isset($_SESSION['carer_id'])) : ?>
                         <form method="post">
                             <button type="submit" name="logout" class="btn btn-outline-dark">Log Out</button>
                         </form>
-
+                    <?php else: ?>
+                        <div>
+                            <a href="loginpage.php" class="btn btn-outline-dark">Login</a>
+                            <a href="signuppage.php" class="btn btn-outline-dark">Sign Up</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </nav>
 </header>
-<section class="section confirmation">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-          <div class="confirmation-content text-center">
-            <i class="icofont-check-circled text-lg text-color-2"></i>
-              <h2 class="mt-3 mb-4">Request Confirmed</h2>
-              <p>You have been assigned:</p>
-			  <h3>X</h3>
-			  <div class="button-container">
-			</div>
-          </div>
-      </div>
+<section class="contact-form-wrap section" style="padding-top: 10px; margin-top: 130px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="section-title text-center">
+                    <h2 class="text-md mb-2">APPOINTMENT REQUEST FORM<?php echo $carer?></h2>
+                    <div class="divider mx-auto my-4"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <form method="post" action="">
+                 <!-- form message -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-success contact__msg" style="display: none" role="alert">
+                                Your message was sent successfully.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>First Name:</b></label>
+                                <input name="name" id="name" type="text" class="form-control" value="<?php echo $_SESSION['first']?>" placeholder="Your first Name" >
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Last Name:</b></label>
+                                <input name="email" id="email" type="text" class="form-control" value="<?php echo $_SESSION['last']?>" placeholder="Your Last Name">
+                            </div>
+                        </div>
+                         <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Email Address:</b></label>   
+                                <input name="subject" id="subject" type="tel" class="form-control" value="<?php echo $_SESSION['email']?>" placeholder="Your Email address">
+                            </div>
+                        </div>
+                         <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Phone Number:</b></label>
+                                <input name="phone" id="phone" type="text" class="form-control" value="<?php echo $_SESSION['number']?>" placeholder="Your Phone Number">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="first"><b>Carer:</b></label>
+                                
+                                <select name="carer" id="" class="form-control">
+                                    <option value="">Select a Carer</option>
+                                    <?php
+                                        $select_query = "SELECT c.*, a.* FROM `assignment` a JOIN `carer` c ON a.carer_id = c.carer_id WHERE patientID=?";
+                                        $stmt = mysqli_prepare($conn, $select_query);
+                                        mysqli_stmt_bind_param($stmt, "i", $_SESSION['patient_id']);
+                                        mysqli_stmt_execute($stmt);
+                                        $result = mysqli_stmt_get_result($stmt);
+                                        
+                                        // Now you can fetch the rows from the result set
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $carer = $row['carer_id'];
+                                            $carer_name = $row['FirstName'] . " " . $row['LastName'];
+                                            echo "<option value='$carer'>$carer_name</option>";
+                                        }
+                                        
+                                        mysqli_stmt_close($stmt);
+                                        
+
+
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <input class="btn btn-main btn-round-full" name="request" type="submit" value="Request Appointment Call">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <!-- footer Start -->
-<footer>
-    <div class="row">
-        <div class="col">
-                <p>Novena Health & Care Medical Center is renowned for its exceptional healthcare services. With an unwavering dedication to our patients' welfare, we embrace compassion, expertise, and ingenuity in all facets of our care. From state-of-the-art medical procedures to individualized attention, we place your health journey at the forefront. At Novena Health & Care, we go beyond being mere providers; we become allies on your quest for well-being, offering unmatched assistance and direction at every juncture. Count on us to provide top-tier medical care,
-                as your health always comes first in our practice.</p>
-                </div>
-                <div class="col">
-                    <h3>Contact Details</h3>
-                    <p>Support Available for 24/7 </p>
-                    <p>Mon to Fri : 08:30 - 18:00</p> 
-                    <p class="email-id">Support@email.com</p>
-                    <h4>+23-456-6588</h4>
-                 </div>
-                <div class="col">
-                    <h3>Links</h3>
-                    <ul>
-                        <li><a href="">About us</a></li>
-                        <li><a href="">contact form</a></li>
-                        <li><a href="https://www.gov.uk/help/privacy-notice">Privacy Poilices</a></li>
-                        <li><a href="https://www.gov.uk/copyright">Copy Rights</a></li>
-                     </ul>
-                </div>
-                <div class="col">
-                    <h3>News letter</h3>
-                    <form>
-                    <i class="fa-regular fa-envelope"></i>
-                        <input Type="email" placeholder="enter your email id" required>
-                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
-                    </form>
-                    <div class="Social-icons">
-                        <i class="fa-brands fa-linkedin"></i>
-                        <i class="fa-brands fa-twitter"></i>
-                        <i class="fa-brands fa-pinterest"></i>
-                        <i class="fa-brands fa-square-instagram"></i>
+<footer  id= "footer" class="footer gray-bg" style="padding-top: 10px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mr-auto col-sm-6">
+                <div class="widget mb-5 mb-lg-0">
+                    <div class="logo mb-4">
+                        <img src="images/Arrow_logo.png" alt="" class="img-fluid">
                     </div>
-                        
+
+                    <ul class="list-inline footer-socials mt-4">
+                        <li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="widget widget-contact mb-5 mb-lg-0">
+                    <h4 class="text-capitalize mb-3 footer-heading">Get in Touch</h4>
+                    <div class="divider mb-4"></div>
+                    <div class="footer-contact-block mb-4">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-email mr-3"></i>
+                            <span class="h6 mb-0">Support Available for 24/7</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">Support@email.com</a></h4>
+                    </div>
+                    <div class="footer-contact-block">
+						<div class="icon d-flex align-items-center">
+							<i class="icofont-support mr-3"></i>
+							<span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
+						</div>
+						<h4 class="mt-2"><a href="tel:+23-345-67890">+23-456-6588</a></h4>
+					</div>
+
+                    
+                </div>
+            </div>
         </div>
-        <hr>
-        <p class="copyright">Novena Health & Carers Medical site @ 2024 ~ All Rights Reserved</p>
+    </div>
 </footer>
-   
 
     <!-- 
     Essential Scripts
@@ -158,3 +290,4 @@ include('includes/dbconfig.php');
 
   </body>
   </html>
+ 

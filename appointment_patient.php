@@ -1,39 +1,43 @@
 <?php
 
-// <NAME> IBARHIM SULU-GAMBARI
-// <CONTRIBUTION TO THIS PAGE> The entire page apart from the header 
-// WITH  THE USE OF HTML,CSS and PHP
-
-// (these lines of code start a PHP session)
+// Start a PHP session (these lines of code start a PHP session)
 session_start();
 
-// (these lines of code include the database configuration file)
+// Include the database configuration file 
 include('includes/dbconfig.php');
 
-$carer_id = $_SESSION['carer_id'];
+// <NAME> OLADIPUPO ROLAND FAMILUA 
+// <CONTRIBUTION TO THIS PAGE> The entire page apart from the header and footer
+// WITH  THE USE OF HTML,CSS and PHP
+
+// Get the patient ID from the session
+$patient_id = $_SESSION['patient_id'];
+
+// Prepare and execute SQL query to fetch appointments for the patient
 $query = "SELECT a.*, p.FirstName, p.LastName, p.Email, p.PhoneNumber 
-          FROM appointment a 
-          INNER JOIN patient p ON a.patientID = p.patientID 
-          WHERE a.carer_id = ?";
+FROM appointment a 
+INNER JOIN patient p ON a.patientID = p.patientID 
+WHERE a.patientID = ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $carer_id);
+mysqli_stmt_bind_param($stmt, "i", $patient_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
+// Handle appointment update if submitted
 if(isset($_POST['update'])) {
     
-    // (these lines of code extract appointment details from the submitted form)
+    // Extract appointment details from the form
     $appointment_id = $_POST['app_id']; 
     $date = $_POST['date'];
     $time = $_POST['time'];
 
-    // (these lines of code update the appointment details in the database)
+    // Update the appointment details in the database
     $query = "UPDATE appointment SET date = ?, time = ? WHERE appointment_id = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "ssi", $date, $time, $appointment_id);
     mysqli_stmt_execute($stmt);
 
-    // (these lines of code check if the update was successful and refresh the page)
+    // Check if the update was successful and refresh the page
     if(mysqli_stmt_affected_rows($stmt) > 0) {
         header("refresh:0");
     } else {
@@ -41,9 +45,11 @@ if(isset($_POST['update'])) {
     }
 }
 ?>
+
 <!-- // <NAME> MUHAMMED UMER
-// <CONTRIBUTION TO THIS PAGE> THE FRONT-END OF THE FOOTER AND HEADER
-// WITH  THE USE OF HTML AND CASS -->
+// <CONTRIBUTION TO THIS PAGE> THE FRONT-END OF THE FOOTER 
+// WITH  THE USE OF HTML AND CSS -->
+
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -118,14 +124,13 @@ if(isset($_POST['update'])) {
         </div>
     </nav>
 </header>
-
 <section class="page-title bg-1">
   <div class="overlay"></div>
   <div class="container">
     <div class="row">
       <div class="col-md-12">
         <div class="block text-center">
-          <span class="text-white">SET APPOINTMENT TIMES</span>
+          <span class="text-white">YOUR APPOINTMENTS <?php echo $patient_id ?></span>
           <h1 class="text-capitalize mb-5 text-lg">Appoinment Requests</h1>
 
           <!-- <ul class="list-inline breadcumb-nav">
@@ -153,7 +158,6 @@ if(isset($_POST['update'])) {
                             <th>Phone</th>
                             <th>Appointment Date</th>
                             <th>Appointment Time</th>
-                            <th>SET</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -165,10 +169,7 @@ if(isset($_POST['update'])) {
                             <td><?php echo $row['PhoneNumber']; ?></td>
                             <td><input type="date" name="date" value="<?php echo $row['date']; ?>"></td>
                             <td><input type="time" name="time" value="<?php echo $row['time']; ?>"></td>
-                            <td>
-                                <input type="hidden" value="<?php echo $row['appointment_id']; ?>" name="app_id">
-                                <input type="submit" name="update" value="Update">
-                            </td>
+                            
                         </tr>
                     </tbody>
                 </table>

@@ -1,4 +1,7 @@
 <?php
+// <NAME> IBARHIM SULU-GAMBARI
+// <CONTRIBUTION TO THIS PAGE> The entire page apart from the header 
+// WITH  THE USE OF HTML,CSS and PHP
 session_start();
 include('includes/dbconfig.php');
 
@@ -9,6 +12,9 @@ if(isset($_POST['logout']))
 	header( "Refresh:1; url=index.php"); 
 }
 ?>
+<!-- // <NAME> MUHAMMED UMER
+// <CONTRIBUTION TO THIS PAGE> THE FRONT-END OF THE  HEADER
+// WITH  THE USE OF HTML AND CSS -->
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -18,6 +24,12 @@ if(isset($_POST['logout']))
   <meta name="author" content="themefisher.com">
 
   <title>Novena- Health & Care Medical template</title>
+  <style>
+    .header {
+    background-color: #129b04; 
+    color: white;
+}
+  </style>
 
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
@@ -29,15 +41,16 @@ if(isset($_POST['logout']))
   <!-- Slick Slider  CSS -->
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick.css">
   <link rel="stylesheet" href="plugins/slick-carousel/slick/slick-theme.css">
-  <script src="https://kit.fontawesome.com/fbed98dcbf.js" crossorigin="anonymous"></script>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
 </head>
 
-<body id="top">
-<header class="header">
+<body>
+
+
+<header class="header fixed-top">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="#">Novena</a>
@@ -66,12 +79,9 @@ if(isset($_POST['logout']))
                         <a class="nav-link" href="blog.php">Blog</a>
                     </li>
                 </ul>
-                <div class="form-inline my-2 my-lg-0 mr-2">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
-                </div>
+                
                 <div class="login-buttons ml-auto">
-                    <?php if(isset($_SESSION['patient_id'])): ?>
+                    <?php if (isset($_SESSION['patient_id']) || isset($_SESSION['carer_id'])) : ?>
                         <form method="post">
                             <button type="submit" name="logout" class="btn btn-outline-dark">Log Out</button>
                         </form>
@@ -86,10 +96,8 @@ if(isset($_POST['logout']))
         </div>
     </nav>
 </header>
-
-
 <!-- Slider Start -->
-<section class="banner">
+<section class="banner" style="padding-top: 10px; margin-top: 100px;">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6 col-md-12 col-xl-7">
@@ -107,7 +115,7 @@ if(isset($_POST['logout']))
 		</div>
 	</div>
 </section>
-<section class="features">
+<section class="features" style="padding-top: 10px; margin-bottom: 100px;">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
@@ -149,49 +157,49 @@ if(isset($_POST['logout']))
 	</div>
 </section>
 
-
 <!-- footer Start -->
-<footer>
-    <div class="row">
-        <div class="col">
-                <p>Novena Health & Care Medical Center is renowned for its exceptional healthcare services. With an unwavering dedication to our patients' welfare, we embrace compassion, expertise, and ingenuity in all facets of our care. From state-of-the-art medical procedures to individualized attention, we place your health journey at the forefront. At Novena Health & Care, we go beyond being mere providers; we become allies on your quest for well-being, offering unmatched assistance and direction at every juncture. Count on us to provide top-tier medical care,
-                as your health always comes first in our practice.</p>
-                </div>
-                <div class="col">
-                    <h3>Contact Details</h3>
-                    <p>Support Available for 24/7 </p>
-                    <p>Mon to Fri : 08:30 - 18:00</p> 
-                    <p class="email-id">Support@email.com</p>
-                    <h4>+23-456-6588</h4>
-                 </div>
-                <div class="col">
-                    <h3>Links</h3>
-                    <ul>
-                        <li><a href="">About us</a></li>
-                        <li><a href="">contact form</a></li>
-                        <li><a href="https://www.gov.uk/help/privacy-notice">Privacy Poilices</a></li>
-                        <li><a href="https://www.gov.uk/copyright">Copy Rights</a></li>
-                     </ul>
-                </div>
-                <div class="col">
-                    <h3>News letter</h3>
-                    <form>
-                    <i class="fa-regular fa-envelope"></i>
-                        <input Type="email" placeholder="enter your email id" required>
-                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
-                    </form>
-                    <div class="Social-icons">
-                        <i class="fa-brands fa-linkedin"></i>
-                        <i class="fa-brands fa-twitter"></i>
-                        <i class="fa-brands fa-pinterest"></i>
-                        <i class="fa-brands fa-square-instagram"></i>
+<footer  id= "footer" class="footer gray-bg" style="padding-top: 10px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mr-auto col-sm-6">
+                <div class="widget mb-5 mb-lg-0">
+                    <div class="logo mb-4">
+                        <img src="images/Arrow_logo.png" alt="" class="img-fluid">
                     </div>
-                        
+
+                    <ul class="list-inline footer-socials mt-4">
+                        <li class="list-inline-item"><a href="#"><i class="icofont-facebook"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="icofont-twitter"></i></a></li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="widget widget-contact mb-5 mb-lg-0">
+                    <h4 class="text-capitalize mb-3 footer-heading">Get in Touch</h4>
+                    <div class="divider mb-4"></div>
+                    <div class="footer-contact-block mb-4">
+                        <div class="icon d-flex align-items-center">
+                            <i class="icofont-email mr-3"></i>
+                            <span class="h6 mb-0">Support Available for 24/7</span>
+                        </div>
+                        <h4 class="mt-2"><a href="tel:+23-345-67890" class="footer-link">Support@email.com</a></h4>
+                    </div>
+                    <div class="footer-contact-block">
+						<div class="icon d-flex align-items-center">
+							<i class="icofont-support mr-3"></i>
+							<span class="h6 mb-0">Mon to Fri : 08:30 - 18:00</span>
+						</div>
+						<h4 class="mt-2"><a href="tel:+23-345-67890">+23-456-6588</a></h4>
+					</div>
+
+                    
+                </div>
+            </div>
         </div>
-        <hr>
-        <p class="copyright">Novena Health & Carers Medical site @ 2024 ~ All Rights Reserved</p>
+    </div>
 </footer>
+
 
 
     <!-- 
@@ -220,27 +228,27 @@ if(isset($_POST['logout']))
     <script src="js/contact.js"></script>
     <script>
 $(document).ready(function() {
-    
+    // Add click event listener to the "Make Appointment" buttons
     $(".btn-make-appointment").click(function() {
-        
+        // Check if the patient is logged in
         <?php if (isset($_SESSION['patient_id'])): ?>
-         
+            // If logged in, redirect to the confirmation_patient.php page
             window.location.href = "confirmation_patient.php";
         <?php else: ?>
-     
+            // If not logged in, redirect to the login.php page
             window.location.href = "loginpage.php";
         <?php endif; ?>
     });
 });
 $(document).ready(function() {
-    
+    // Add click event listener to the "Make Appointment" buttons
     $(".btn-get-carer").click(function() {
-        
+        // Check if the patient is logged in
         <?php if (isset($_SESSION['patient_id'])): ?>
-      
+            // If logged in, redirect to the confirmation_patient.php page
             window.location.href = "assign_carer.php";
         <?php else: ?>
-            
+            // If not logged in, redirect to the login.php page
             window.location.href = "loginpage.php";
         <?php endif; ?>
     });
@@ -249,4 +257,4 @@ $(document).ready(function() {
 
   </body>
   </html>
-   '
+   

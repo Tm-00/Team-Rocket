@@ -11,7 +11,33 @@ Version: 1.0.0
 html {
   overflow-x: hidden;
 }
+/*** Spinner Start ***/
+#spinner {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .8s ease-out, visibility 0s linear .5s;
+  z-index: 99999;
+}
 
+#spinner.show {
+   transition: opacity .8s ease-out, visibility 0s linear .0s;
+   visibility: visible;
+   opacity: 1;
+}
+
+.back-to-top {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  width: 45px;
+  height: 45px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.5s;
+  z-index: 99;
+}
+/*** Spinner End ***/
 body {
   line-height: 1.6;
   font-family: "Roboto", sans-serif;
@@ -58,6 +84,11 @@ p {
 
 .navbar-toggle .icon-bar {
   background: #129b04;
+}
+header.header.fixed-top {
+  color: #129b04;
+  background: #129b04;
+  height: 100px;
 }
 
 input[type="email"], input[type="password"], input[type="text"], input[type="tel"] {
@@ -117,8 +148,8 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
 }
 
 .btn-main:hover {
-  background: #129b04;
-  border-color: #129b04;
+  background: black;
+  border-color: black;
   color: #fff;
 }
 
@@ -129,9 +160,9 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
 }
 
 .btn-main-2:hover {
-  background: #129b04;
+  background: black;
+  border-color: black;
   color: #fff;
-  border-color: #129b04;
 }
 
 .btn-solid-border {
@@ -141,9 +172,9 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
 }
 
 .btn-solid-border:hover {
-  border: 2px solid #129b04;
+  background: black;
+  border-color: black;
   color: #fff;
-  background: #129b04;
 }
 
 .btn-solid-border:hover.btn-icon i {
@@ -172,9 +203,9 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
 }
 
 .btn-white:hover {
-  background: #129b04;
+  background: black;
+  border-color: black;
   color: #fff;
-  border-color: #129b04;
 }
 
 .btn-solid-white {
@@ -465,7 +496,7 @@ a:focus {
   position: relative;
   overflow: hidden;
   background: #fff;
-  background: url("../images/bg/slider-bg-1.jpg") no-repeat;
+  background: url("../images/bg/slider-b-1.jpg") no-repeat;
   background-size: cover;
   min-height: 550px;
 }
@@ -1041,7 +1072,7 @@ a:focus {
   font-size: 38px;
 }
 .header {
-  background-color: #2B4F76;
+  background-color: #129b04;
 }
 
 .navbar-brand {
@@ -1056,11 +1087,11 @@ a:focus {
 }
 
 .navbar-nav .nav-link:hover {
-  color: #f8f9fa; /* lighter shade of white */
+  color: black; /* lighter shade of white */
 }
 
 .dropdown-menu {
-  background-color: #2B4F76;
+  background-color:black;
 }
 
 .dropdown-item {
@@ -1088,7 +1119,7 @@ a:focus {
 
 .btn-outline-light:hover {
   background-color: #f8f9fa; /* lighter shade of white */
-  color: #2B4F76; /* your primary color */
+  color: #129b04; /* your primary color */
 }
 
 .btn-danger {
@@ -1099,6 +1130,9 @@ a:focus {
 .btn-danger:hover {
   background-color: #c82333; /* Slightly darker shade of the button color */
 }
+
+
+
 
 
 
