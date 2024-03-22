@@ -1,80 +1,81 @@
 <?php
-
-// <NAME> IBRAHIM SULU-GAMBARI, SIOBHAN UTETE
-// <CONTRIBUTION TO THIS PAGE> ALL THE PHP PRESENT HERE
-// WITH  THE USE OF PHP
-
 include('includes/dbconfig.php');
-
 if(isset($_POST['register'])){   
-    // <NAME> SIOBHAN UTETE
-    // <CONTRIBUTION TO THIS PAGE> SECURING THE WEBSITE BY SANITIZING AND FILTERING
-    // WITH  THE USE OF PHP
-
-    // (these lines of code sanitize user inputs)
+    
     $firstName = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
     $lastName = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_NUMBER_INT);
+    $number = filter_var($_POST['phone_number'], FILTER_SANITIZE_STRING);
     $DOB = $_POST['dob'];
     $userType = $_POST['user'];
     $password = $_POST['password'];
     $cpassword = $_POST['confirm_password'];
 
-    // Check if passwords match
+    
+    
     if ($password !== $cpassword) {
         $error_message = 'Passwords do not match';
         echo $error_message;
     } else {
-        // Check if account already exists
+        
         if($userType==="patient"){
             $check = "SELECT * FROM `patient` WHERE FirstName = ? AND LastName = ? AND Email= ?";    
             $stmt = mysqli_prepare($conn, $check);
-        } elseif($userType==="carer"){
+            }
+        elseif($userType==="carer"){
             $check = "SELECT * FROM `carer` WHERE FirstName = ? AND LastName = ? AND Email= ?";  
             $stmt = mysqli_prepare($conn, $check);        
-        }
-        mysqli_stmt_bind_param($stmt, "sss",$firstName, $lastName ,$email);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if(mysqli_num_rows($result) > 0){
-            $error = "Account already exists";
-            echo $error;
-            header("Refresh: 2; url=loginpage.php");
-            exit();
-        } else {
-            // Hash the password
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            if($userType === "patient") {
-                $query = "INSERT INTO `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber) VALUES (?,?,?,?,?,?)";
-                $stmt = mysqli_prepare($conn, $query);
-                mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
-            } elseif($userType === "carer") {
-                $query = "INSERT INTO `carer` (FirstName,LastName,Password,Email,PhoneNumber) VALUES (?,?,?,?,?)";
-                $stmt = mysqli_prepare($conn, $query);
-                mysqli_stmt_bind_param($stmt, "sssss", $firstName,$lastName,$hashed_password,$email,$number);
             }
-            
-            // Execute the query
-            if (mysqli_stmt_execute($stmt)){
-                // Redirect to loginpage.php on successful signup
-                header('Location: loginpage.php');
-                exit; 
-            } else {
-                // Display error message if signup failed
-                $error_message = 'Signup failed';
-                echo $error_message;
+            mysqli_stmt_bind_param($stmt, "sss",$firstName, $lastName ,$email);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            if(mysqli_num_rows($result) > 0){
+                $error = "Account already exists";
+                echo $error;
+                header("Refresh: 2; url=loginpage.php");
+               
+                exit();
             }
-        }
+            else{
+
+
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    if($userType === "patient") {
+        $query = "insert into `patient` (FirstName,LastName,DOB,Password,Email,PhoneNumber) values (?,?,?,?,?,?)";
+             $stmt = mysqli_prepare($conn, $query);
+
+    mysqli_stmt_bind_param($stmt, "ssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number);
+    } elseif($userType === "carer") {
+        $query = "insert into `carer` (FirstName,LastName,Password,Email,PhoneNumber) values (?,?,?,?,?)";
+             $stmt = mysqli_prepare($conn, $query);
+
+    mysqli_stmt_bind_param($stmt, "sssss", $firstName,$lastName,$hashed_password,$email,$number);
     }
-    // Close the statement and database connection
-    mysqli_stmt_close($stmt);
+    
+    if (mysqli_stmt_execute($stmt)){
+        
+        header('Location: loginpage.php');
+        exit; 
+    } else {
+        
+        $error_message = 'Signup failed';
+         echo $error_message;
+    }
+}
+   mysqli_stmt_close($siobhan);
+}
+    
     mysqli_close($conn);
 }
 
+
 ?>
 
+<!-- ?>
+$query = "insert into `users` (FirstName,LastName,DOB,Password,Email,PhoneNumber,user_type) values (?,?,?,?,?,?,'?')";
+    $siobhan = mysqli_prepare($conn, $query);
 
+    mysqli_stmt_bind_param($siobhan, "sssssss", $firstName,$lastName,$DOB,$hashed_password,$email,$number,$userType); -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
